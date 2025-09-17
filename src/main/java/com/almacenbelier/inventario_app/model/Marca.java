@@ -1,4 +1,4 @@
-package model;
+package com.almacenbelier.inventario_app.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

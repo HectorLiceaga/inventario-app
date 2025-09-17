@@ -1,3 +1,6 @@
+import com.almacenbelier.inventario_app.model.Producto;
+import com.almacenbelier.inventario_app.repository.ProductoRepository;
+import com.almacenbelier.inventario_app.service.ProductoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
