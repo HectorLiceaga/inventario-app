@@ -1,6 +1,6 @@
-package com.almacenbelier.inventario_app.repository;
+package com.almacenbelier.inventarioApp.repository;
 
-import com.almacenbelier.inventario_app.model.Marca;
+import com.almacenbelier.inventarioApp.model.Marca;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MarcaRepository extends JpaRepository<Marca, Long> {

@@ -1,4 +1,4 @@
-package com.almacenbelier.inventario_app.model;
+package com.almacenbelier.inventarioApp.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

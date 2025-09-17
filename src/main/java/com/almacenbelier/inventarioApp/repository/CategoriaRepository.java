@@ -1,6 +1,6 @@
-package com.almacenbelier.inventario_app.repository;
+package com.almacenbelier.inventarioApp.repository;
 
-import com.almacenbelier.inventario_app.model.Categoria;
+import com.almacenbelier.inventarioApp.model.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {

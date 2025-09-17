@@ -1,12 +1,12 @@
-package com.almacenbelier.inventario_app.service;
+package com.almacenbelier.inventarioApp.service;
 
-import com.almacenbelier.inventario_app.dto.ProductoDTO;
-import com.almacenbelier.inventario_app.model.Categoria;
-import com.almacenbelier.inventario_app.model.Marca;
-import com.almacenbelier.inventario_app.model.Producto;
-import com.almacenbelier.inventario_app.repository.CategoriaRepository;
-import com.almacenbelier.inventario_app.repository.MarcaRepository;
-import com.almacenbelier.inventario_app.repository.ProductoRepository;
+import com.almacenbelier.inventarioApp.dto.ProductoDTO;
+import com.almacenbelier.inventarioApp.model.Categoria;
+import com.almacenbelier.inventarioApp.model.Marca;
+import com.almacenbelier.inventarioApp.model.Producto;
+import com.almacenbelier.inventarioApp.repository.CategoriaRepository;
+import com.almacenbelier.inventarioApp.repository.MarcaRepository;
+import com.almacenbelier.inventarioApp.repository.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

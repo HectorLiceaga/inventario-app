@@ -1,7 +1,7 @@
-package com.almacenbelier.inventario_app.controller;
+package com.almacenbelier.inventarioApp.controller;
 
-import com.almacenbelier.inventario_app.dto.ProductoDTO;
-import com.almacenbelier.inventario_app.service.ProductoService;
+import com.almacenbelier.inventarioApp.dto.ProductoDTO;
+import com.almacenbelier.inventarioApp.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

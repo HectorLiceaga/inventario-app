@@ -1,11 +1,13 @@
-package com.almacenbelier.inventario_app.dto;
+package com.almacenbelier.inventarioApp.dto.response;
 
 import lombok.Data;
 
 @Data
-public class ProductoDTO {
+public class ProductoResponseDTO {
 
+    // Aquí SÍ incluimos el ID, porque el producto ya existe en la base de datos.
     private Long id;
+
     private String sku;
     private String nombre;
     private String talle;
@@ -13,8 +15,8 @@ public class ProductoDTO {
     private Double precioVenta;
     private int stock;
 
-    // Para las relaciones, solo necesitamos los IDs para crear/actualizar,
-    // y los nombres para mostrar. Vamos a simplificarlo en un solo DTO.
+    // Para la respuesta, es muy útil incluir no solo los IDs de las relaciones,
+    // sino también sus nombres. Esto le ahorra trabajo al frontend.
     private Long marcaId;
     private String marcaNombre;
 
