@@ -1,6 +1,9 @@
 package com.almacenbelier.inventarioApp;
 
-import com.almacenbelier.inventarioApp.dto.ProductoDTO;
+// Asegúrate que los imports sean los correctos para tus clases
+
+import com.almacenbelier.inventarioApp.dto.request.ProductoRequestDTO;
+import com.almacenbelier.inventarioApp.dto.response.ProductoResponseDTO;
 import com.almacenbelier.inventarioApp.model.Categoria;
 import com.almacenbelier.inventarioApp.model.Marca;
 import com.almacenbelier.inventarioApp.model.Producto;
@@ -23,7 +26,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProductoServiceTest {
 
-    // 1. Mockeamos TODAS las dependencias del servicio
     @Mock
     private ProductoRepository productoRepository;
     @Mock
@@ -31,14 +33,10 @@ class ProductoServiceTest {
     @Mock
     private CategoriaRepository categoriaRepository;
 
-    // Ya no usamos @InjectMocks
     private ProductoService productoService;
 
-    // 2. Este método se ejecuta antes de cada test
     @BeforeEach
     void setUp() {
-        // Creamos la instancia del servicio manualmente, pasando los mocks en el constructor.
-        // ¡Esto es posible gracias a la inyección por constructor!
         productoService = new ProductoService(productoRepository, marcaRepository, categoriaRepository);
     }
 
@@ -47,12 +45,16 @@ class ProductoServiceTest {
         // --- ARRANGE (Preparar el escenario) ---
 
         // a. Creamos el DTO que simula la entrada desde el controlador
-        ProductoDTO productoDTO_entrada = new ProductoDTO();
+        // CORRECCIÓN 1: Instanciamos la clase correcta y completamos sus datos
+        ProductoRequestDTO productoDTO_entrada = new ProductoRequestDTO();
         productoDTO_entrada.setSku("BUZO-ROJO-S");
         productoDTO_entrada.setNombre("Buzo Rojo Talle S");
+        productoDTO_entrada.setTalle("S");
+        productoDTO_entrada.setColor("Rojo");
+        productoDTO_entrada.setPrecioVenta(25000.0);
+        productoDTO_entrada.setStock(10);
         productoDTO_entrada.setMarcaId(1L);
         productoDTO_entrada.setCategoriaId(10L);
-        // ... otros campos del DTO
 
         // b. Creamos las entidades que los repositorios "encontrarán"
         Marca marcaEncontrada = new Marca();
@@ -65,7 +67,7 @@ class ProductoServiceTest {
 
         // c. Creamos la entidad Producto que el repositorio "guardará"
         Producto productoGuardado = new Producto();
-        productoGuardado.setId(99L); // Simulamos que la BD le asignó un ID
+        productoGuardado.setId(99L);
         productoGuardado.setSku("BUZO-ROJO-S");
         productoGuardado.setNombre("Buzo Rojo Talle S");
         productoGuardado.setMarca(marcaEncontrada);
@@ -78,7 +80,8 @@ class ProductoServiceTest {
 
 
         // --- ACT (Ejecutar el método a probar) ---
-        ProductoDTO resultadoDTO = productoService.crearProducto(productoDTO_entrada);
+        // CORRECCIÓN 2: Pasamos la variable correcta al método
+        ProductoResponseDTO resultadoDTO = productoService.crearProducto(productoDTO_entrada);
 
 
         // --- ASSERT (Verificar el resultado) ---

@@ -1,0 +1,8 @@
+spring.application.name=inventario-app
+
+# Configuración para PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/inventario_db
+spring.datasource.username=#<- DEJAR VACÍO O PONER "tu_usuario"
+spring.datasource.password=#<- DEJAR VACÍO O PONER "tu_contraseña"
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect

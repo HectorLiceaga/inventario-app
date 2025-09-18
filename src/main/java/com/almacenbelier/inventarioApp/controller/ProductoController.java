@@ -1,7 +1,9 @@
 package com.almacenbelier.inventarioApp.controller;
 
-import com.almacenbelier.inventarioApp.dto.ProductoDTO;
+import com.almacenbelier.inventarioApp.dto.request.ProductoRequestDTO;
+import com.almacenbelier.inventarioApp.dto.response.ProductoResponseDTO;
 import com.almacenbelier.inventarioApp.service.ProductoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,40 +12,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/productos") // La URL base para todos los endpoints de productos
+@RequestMapping("/api/productos")
 @RequiredArgsConstructor
 public class ProductoController {
 
     private final ProductoService productoService;
 
-    // Endpoint para CREAR un producto (POST)
     @PostMapping
-    public ResponseEntity<ProductoDTO> crearProducto(@RequestBody ProductoDTO productoDTO) {
-        ProductoDTO nuevoProducto = productoService.crearProducto(productoDTO);
-        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED); // Devuelve 201 Created
+    public ResponseEntity<ProductoResponseDTO> crearProducto(@Valid @RequestBody ProductoRequestDTO requestDTO) {
+        // La anotación @Valid le dice a Spring que aplique las reglas de validación del DTO.
+        // Si alguna regla falla, Spring devolverá automáticamente un error 400 Bad Request.
+        ProductoResponseDTO nuevoProducto = productoService.crearProducto(requestDTO);
+        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
     }
 
-    // Endpoint para OBTENER TODOS los productos (GET)
     @GetMapping
-    public ResponseEntity<List<ProductoDTO>> listarProductos() {
-        List<ProductoDTO> productos = productoService.obtenerTodosLosProductos();
-        return new ResponseEntity<>(productos, HttpStatus.OK); // Devuelve 200 OK
+    public ResponseEntity<List<ProductoResponseDTO>> listarProductos() {
+        List<ProductoResponseDTO> productos = productoService.obtenerTodosLosProductos();
+        return ResponseEntity.ok(productos); // .ok() es un atajo para new ResponseEntity<>(..., HttpStatus.OK)
     }
 
-    // Endpoint para OBTENER UN producto por ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<ProductoDTO> obtenerProductoPorId(@PathVariable Long id) {
-        ProductoDTO producto = productoService.obtenerProductoPorId(id);
-        return new ResponseEntity<>(producto, HttpStatus.OK);
+    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorId(@PathVariable Long id) {
+        ProductoResponseDTO producto = productoService.obtenerProductoPorId(id);
+        return ResponseEntity.ok(producto);
     }
 
-    // Endpoint para ELIMINAR un producto (DELETE)
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductoResponseDTO> actualizarProducto(@PathVariable Long id, @Valid @RequestBody ProductoRequestDTO requestDTO) {
+        ProductoResponseDTO productoActualizado = productoService.actualizarProducto(id, requestDTO);
+        return ResponseEntity.ok(productoActualizado);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Devuelve 204 No Content
+        return ResponseEntity.noContent().build(); // .noContent().build() es un atajo para HttpStatus.NO_CONTENT
     }
-
-    // Faltaría el endpoint para ACTUALIZAR (PUT), pero con esto ya tienes un CRUD casi completo.
 }
 
