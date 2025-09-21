@@ -39,7 +39,7 @@ public class ProductoService {
     public List<ProductoResponseDTO> obtenerTodosLosProductos() {
         return productoRepository.findAll()
                 .stream()
-                .map(this::convertirA_ResponseDTO) // Usamos el nuevo método de conversión
+                .map(this::convertirA_ResponseDTO) // Usamos el nuevo métordo de conversión
                 .collect(Collectors.toList());
     }
 

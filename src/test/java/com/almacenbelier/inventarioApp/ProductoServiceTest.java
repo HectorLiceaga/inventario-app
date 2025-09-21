@@ -80,7 +80,7 @@ class ProductoServiceTest {
 
 
         // --- ACT (Ejecutar el método a probar) ---
-        // CORRECCIÓN 2: Pasamos la variable correcta al método
+        // CORRECCIÓN 2: Pasamos la variable correcta al métordo
         ProductoResponseDTO resultadoDTO = productoService.crearProducto(productoDTO_entrada);
 
 

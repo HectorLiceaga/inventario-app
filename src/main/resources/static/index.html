@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="container">
+    <h1>Lector de Inventario</h1>
+
+    <div class="scanner-input">
+        <label for="skuInput">SKU del Producto:</label>
+        <input type="text" id="skuInput" placeholder="Escanee o ingrese el SKU...">
+    </div>
+
+    <button id="start-camera-btn">📷 Escanear con Cámara</button>
+
+    <div id="video-container"></div>
+
+    <hr>
+
+    <h2>Resultado</h2>
+    <div id="result-container">
+        <p>Esperando escaneo...</p>
+    </div>
+</main>
+
+<script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
