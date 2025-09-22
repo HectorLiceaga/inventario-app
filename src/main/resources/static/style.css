@@ -35,7 +35,7 @@ body {
 h1, h2 { color: #444; }
 h1 { text-align: center; }
 
-/* --- Columna Izquierda --- */
+/* Scanner Input y Botones */
 .scanner-input input {
     width: 100%;
     padding: 12px;
@@ -45,12 +45,49 @@ h1 { text-align: center; }
     box-sizing: border-box;
 }
 
+.btn-camara {
+    width: 100%;
+    padding: 12px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.btn-camara:hover { background-color: #138496; }
+
+#camera-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 15px auto;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .info-producto {
     margin-top: 15px;
     padding: 10px;
     background: #e9ecef;
     border-radius: 4px;
     min-height: 24px;
+}
+
+.producto-encontrado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#add-to-cart-btn {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 /* Formulario */
@@ -88,8 +125,7 @@ h1 { text-align: center; }
 .btn-guardar { background-color: var(--primary-color); }
 #cancelar-carga-btn { background-color: #6c757d; }
 
-
-/* --- Columna Derecha --- */
+/* Carrito */
 #cart-items { min-height: 200px; max-height: 400px; overflow-y: auto; }
 .empty-cart { color: #6c757d; text-align: center; margin-top: 20px; }
 .cart-item {
@@ -111,8 +147,11 @@ h1 { text-align: center; }
     cursor: pointer;
     border-radius: 4px;
 }
-.remove-item-btn { background-color: var(--danger-color); color: white; }
-
+.remove-item-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none; /* Añadido para consistencia */
+}
 .cart-total {
     margin-top: 20px;
     padding-top: 10px;
@@ -120,7 +159,6 @@ h1 { text-align: center; }
     text-align: right;
     font-size: 1.5em;
 }
-
 #finalizar-venta-btn {
     width: 100%;
     padding: 15px;
@@ -133,7 +171,8 @@ h1 { text-align: center; }
     margin-top: 10px;
 }
 #finalizar-venta-btn:disabled {
-    background-color: #6c757d;
+    background-color: #e9ecef;
+    color: #6c757d;
     cursor: not-allowed;
 }
 

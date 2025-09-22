@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini POS</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.2">
 </head>
 <body>
 <div class="main-container">
@@ -12,7 +12,11 @@
         <h1>Punto de Venta</h1>
         <div class="scanner-input">
             <input type="text" id="skuInput" placeholder="Escanee o ingrese el SKU..." autofocus>
+            <button id="start-camera-btn" class="btn-camara">📷 Escanear con Cámara</button>
         </div>
+
+        <div id="camera-container" class="hidden"></div>
+
         <div id="info-producto" class="info-producto"></div>
 
         <div id="nuevo-producto-container" class="hidden">
@@ -42,7 +46,6 @@
                     <label for="stock-carga">Stock Inicial</label>
                     <input type="number" id="stock-carga" required>
                 </div>
-
                 <div class="form-group">
                     <label for="marca-select">Marca</label>
                     <div class="select-with-add">
@@ -57,6 +60,7 @@
                         <button type="button" class="add-btn" data-tipo="categoria">+</button>
                     </div>
                 </div>
+
                 <button type="submit" class="btn-guardar">Guardar Producto</button>
                 <button type="button" id="cancelar-carga-btn">Cancelar</button>
             </form>
@@ -75,6 +79,7 @@
     </div>
 </div>
 
-<script src="app.js"></script>
+<script src="html5-qrcode.min.js"></script>
+<script src="app.js?v=1.2"></script>
 </body>
 </html>
