@@ -79,7 +79,7 @@ class ProductoServiceTest {
         when(productoRepository.save(any(Producto.class))).thenReturn(productoGuardado);
 
 
-        // --- ACT (Ejecutar el método a probar) ---
+        // --- ACT (Ejecutar el métordo a probar) ---
         // CORRECCIÓN 2: Pasamos la variable correcta al métordo
         ProductoResponseDTO resultadoDTO = productoService.crearProducto(productoDTO_entrada);
 

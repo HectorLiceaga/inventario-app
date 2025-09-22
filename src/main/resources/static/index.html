@@ -26,6 +26,31 @@
     <div id="result-container">
         <p>Esperando escaneo...</p>
     </div>
+
+    <hr>
+
+    <h2>Cargar Nuevo Producto</h2>
+    <form id="form-nuevo-producto">
+        <div class="form-group">
+            <label for="sku-carga">SKU (del escáner)</label>
+            <input type="text" id="sku-carga" required>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre-carga">Nombre del Producto</label>
+            <input type="text" id="nombre-carga" required>
+        </div>
+
+        <div class="form-group">
+            <label for="marca-select">Marca</label>
+            <div class="select-with-add">
+                <select id="marca-select" required></select>
+                <button type="button" class="add-btn" id="add-marca-btn">+</button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-guardar">Guardar Producto</button>
+    </form>
 </main>
 
 <script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
