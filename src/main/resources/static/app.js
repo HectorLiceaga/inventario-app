@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const mostrarProductoParaAgregar = (producto) => {
-        infoProducto.innerHTML = `<div class="producto-encontrado"><span>${producto.nombre} ($${producto.precioVenta.toFixed(2)}) - Stock: ${producto.stock}</span><button id="add-to-cart-btn">Agregar al Carrito</button></div>`;
+        // La única línea que cambia es esta:
+        infoProducto.innerHTML = `<div class="producto-encontrado"><span>${producto.nombre} ($${producto.precioVenta.toFixed(2)}) - Stock: ${producto.stock}</span><button id="add-to-cart-btn" title="Agregar al Carrito">✅</button></div>`;
     };
 
     // --- LÓGICA DEL CARRITO ---
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarCarrito();
     };
 
+// Busca esta función en tu app.js
     const renderizarCarrito = () => {
         cartItemsContainer.innerHTML = '';
         if (carrito.length === 0) {
@@ -105,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let total = 0;
             carrito.forEach(item => {
                 total += item.precioVenta * item.cantidad;
-                cartItemsContainer.innerHTML += `<div class="cart-item"><div class="cart-item-info"><p class="item-name">${item.nombre}</p><p>$${item.precioVenta.toFixed(2)}</p></div><div class="cart-item-controls"><button class="qty-btn" data-id="${item.id}" data-action="decrease">-</button><span>${item.cantidad}</span><button class="qty-btn" data-id="${item.id}" data-action="increase">+</button><button class="remove-item-btn" data-id="${item.id}">X</button></div></div>`;
+                // La única modificación está al final de la siguiente línea:
+                cartItemsContainer.innerHTML += `<div class="cart-item"><div class="cart-item-info"><p class="item-name">${item.nombre}</p><p>$${item.precioVenta.toFixed(2)}</p></div><div class="cart-item-controls"><button class="qty-btn" data-id="${item.id}" data-action="decrease">-</button><span>${item.cantidad}</span><button class="qty-btn" data-id="${item.id}" data-action="increase">+</button><button class="remove-item-btn" data-id="${item.id}">🗑️</button></div></div>`;
             });
             cartTotalAmount.textContent = total.toFixed(2);
             finalizarVentaBtn.disabled = false;
