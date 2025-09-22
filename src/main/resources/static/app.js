@@ -1,109 +1,242 @@
-// --- 1. SELECCIÓN DE ELEMENTOS DEL DOM ---
-const skuInput = document.getElementById('skuInput');
-const startCameraBtn = document.getElementById('start-camera-btn');
-const videoContainer = document.getElementById('video-container');
-const resultContainer = document.getElementById('result-container');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- STATE ---
+    let carrito = [];
 
-let html5QrCode = null; // Variable para guardar la instancia del lector
+    // --- DOM ELEMENTS ---
+    const skuInput = document.getElementById('skuInput');
+    const infoProducto = document.getElementById('info-producto');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalAmount = document.getElementById('cart-total-amount');
+    const finalizarVentaBtn = document.getElementById('finalizar-venta-btn');
+    const nuevoProductoContainer = document.getElementById('nuevo-producto-container');
+    const formNuevoProducto = document.getElementById('form-nuevo-producto');
+    const cancelarCargaBtn = document.getElementById('cancelar-carga-btn');
 
-// --- 2. FUNCIONES PRINCIPALES ---
-
-/**
- * Llama a la API de Spring Boot para buscar un producto por su SKU.
- * @param {string} sku El SKU a buscar.
- */
-async function buscarProductoPorSku(sku) {
-    resultContainer.innerHTML = '<p>Buscando...</p>'; // Feedback para el usuario
-
-    // NOTA: Debes crear este endpoint en tu backend si no lo tienes
-    const API_URL = `/api/productos/sku/${sku}`;
-
-    try {
-        const response = await fetch(API_URL);
-
-        if (response.ok) {
-            const producto = await response.json();
-            mostrarResultados(producto);
-        } else if (response.status === 404) {
-            mostrarError(`Producto con SKU "${sku}" no encontrado.`);
-        } else {
-            mostrarError('Error en la respuesta del servidor.');
-        }
-    } catch (error) {
-        console.error('Error de conexión:', error);
-        mostrarError('No se pudo conectar con el servidor. ¿Está encendido?');
-    }
-}
-
-/**
- * Muestra la información del producto en el contenedor de resultados.
- * @param {object} producto El objeto producto recibido de la API.
- */
-function mostrarResultados(producto) {
-    resultContainer.innerHTML = `
-        <div class="producto">
-            <p><strong>Nombre:</strong> ${producto.nombre}</p>
-            <p><strong>SKU:</strong> ${producto.sku}</p>
-            <p><strong>Precio:</strong> $${producto.precioVenta}</p>
-            <p><strong>Stock:</strong> ${producto.stock} unidades</p>
-        </div>
-    `;
-}
-
-/**
- * Muestra un mensaje de error en el contenedor de resultados.
- * @param {string} mensaje El mensaje de error a mostrar.
- */
-function mostrarError(mensaje) {
-    resultContainer.innerHTML = `<p class="error">${mensaje}</p>`;
-}
-
-/**
- * Inicia el escaneo con la cámara del dispositivo.
- */
-function iniciarEscaneoCamara() {
-    // Si ya hay una instancia, no hagas nada
-    if (html5QrCode && html5QrCode.isScanning) {
-        return;
-    }
-
-    html5QrCode = new Html5Qrcode("video-container"); // Usamos el div del HTML
-
-    const onScanSuccess = (decodedText, decodedResult) => {
-        // Cuando encuentra un código, lo pone en el input y detiene la cámara
-        console.log(`Código encontrado: ${decodedText}`);
-        skuInput.value = decodedText;
-
-        // Dispara la búsqueda automáticamente
-        buscarProductoPorSku(decodedText);
-
-        // Detiene el escáner
-        html5QrCode.stop().then(() => {
-            console.log("Escáner detenido.");
-            videoContainer.style.display = 'none'; // Oculta el contenedor del video
-        }).catch(err => console.error(err));
+    const selects = {
+        marca: document.getElementById('marca-select'),
+        categoria: document.getElementById('categoria-select')
     };
 
-    const config = { fps: 10, qrbox: 250 }; // Configuración del escáner
-    videoContainer.style.display = 'block'; // Muestra el contenedor del video
+    // --- API HELPERS ---
+    const fetchData = async (url, options = {}) => {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error(`Fetch error for ${url}:`, error);
+            throw error;
+        }
+    };
 
-    // Inicia la cámara trasera ("environment")
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-        .catch(err => {
-            console.error("Error al iniciar la cámara", err);
-            mostrarError("No se pudo iniciar la cámara.");
-        });
-}
+    // --- INITIALIZATION ---
+    const inicializarSelects = () => {
+        cargarOpciones('/api/marcas', selects.marca, 'nombre');
+        cargarOpciones('/api/categorias', selects.categoria, 'nombre');
+    };
 
+    // --- CART LOGIC ---
+    const agregarAlCarrito = (producto) => {
+        const itemExistente = carrito.find(item => item.id === producto.id);
+        if (itemExistente) {
+            if (itemExistente.cantidad < producto.stock) {
+                itemExistente.cantidad++;
+            } else {
+                mostrarMensaje(`Stock máximo para ${producto.nombre} alcanzado.`);
+            }
+        } else {
+            if (producto.stock > 0) {
+                carrito.push({ ...producto, cantidad: 1 });
+            } else {
+                mostrarMensaje(`${producto.nombre} no tiene stock.`);
+            }
+        }
+        renderizarCarrito();
+    };
 
-// --- 3. ASIGNACIÓN DE EVENTOS ---
+    const actualizarCantidad = (productoId, nuevaCantidad) => {
+        const item = carrito.find(item => item.id === productoId);
+        if (!item) return;
 
-// Evento para el botón de la cámara
-startCameraBtn.addEventListener('click', iniciarEscaneoCamara);
+        if (nuevaCantidad > 0 && nuevaCantidad <= item.stock) {
+            item.cantidad = nuevaCantidad;
+        } else if (nuevaCantidad === 0) {
+            carrito = carrito.filter(item => item.id !== productoId);
+        }
+        renderizarCarrito();
+    };
 
-// Evento para el input (útil para el lector bluetooth que simula un "Enter")
-skuInput.addEventListener('keyup', (event) => {
-    if (event.key === 'Enter' && skuInput.value) {
-        buscarProductoPorSku(skuInput.value);
-    }
+    // --- RENDER LOGIC ---
+    const renderizarCarrito = () => {
+        cartItemsContainer.innerHTML = '';
+        if (carrito.length === 0) {
+            cartItemsContainer.innerHTML = '<p class="empty-cart">El carrito está vacío.</p>';
+            finalizarVentaBtn.disabled = true;
+        } else {
+            let total = 0;
+            carrito.forEach(item => {
+                const subtotal = item.precioVenta * item.cantidad;
+                total += subtotal;
+                cartItemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <p class="item-name">${item.nombre}</p>
+                            <p>$${item.precioVenta.toFixed(2)}</p>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" data-id="${item.id}" data-action="decrease">-</button>
+                            <span>${item.cantidad}</span>
+                            <button class="qty-btn" data-id="${item.id}" data-action="increase">+</button>
+                            <button class="remove-item-btn" data-id="${item.id}">X</button>
+                        </div>
+                    </div>
+                `;
+            });
+            cartTotalAmount.textContent = total.toFixed(2);
+            finalizarVentaBtn.disabled = false;
+        }
+    };
+
+    // --- PRODUCT LOGIC ---
+    const buscarProducto = async () => {
+        const sku = skuInput.value.trim();
+        if (!sku) return;
+
+        try {
+            const producto = await fetchData(`/api/productos/sku/${sku}`);
+            mostrarMensaje(`Producto encontrado: ${producto.nombre}`);
+            agregarAlCarrito(producto);
+        } catch (error) {
+            mostrarMensaje(`Producto con SKU "${sku}" no encontrado. ¿Desea agregarlo?`);
+            mostrarFormularioNuevoProducto(sku);
+        } finally {
+            skuInput.value = '';
+            skuInput.focus();
+        }
+    };
+
+    // --- FORM LOGIC ---
+    const mostrarFormularioNuevoProducto = (sku) => {
+        nuevoProductoContainer.classList.remove('hidden');
+        document.getElementById('sku-carga').value = sku;
+    };
+
+    const ocultarFormulario = () => {
+        nuevoProductoContainer.classList.add('hidden');
+        formNuevoProducto.reset();
+    };
+
+    const cargarOpciones = async (url, selectElement, nombreCampo) => {
+        try {
+            const data = await fetchData(url);
+            selectElement.innerHTML = '<option value="">Seleccione...</option>';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item[nombreCampo];
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error(`Error al cargar opciones para ${selectElement.id}`);
+        }
+    };
+
+    const agregarNuevaEntidad = async (tipo) => {
+        const nombre = prompt(`Ingrese el nombre de la nueva ${tipo}:`);
+        if (!nombre) return;
+        try {
+            const nuevaEntidad = await fetchData(`/api/${tipo}s`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre })
+            });
+            await cargarOpciones(`/api/${tipo}s`, selects[tipo], 'nombre');
+            selects[tipo].value = nuevaEntidad.id;
+        } catch (error) {
+            alert(`Error al crear la nueva ${tipo}.`);
+        }
+    };
+
+    const guardarNuevoProducto = async (event) => {
+        event.preventDefault();
+        const requestDTO = {
+            sku: document.getElementById('sku-carga').value,
+            nombre: document.getElementById('nombre-carga').value,
+            talle: document.getElementById('talle-carga').value,
+            color: document.getElementById('color-carga').value,
+            precioVenta: parseFloat(document.getElementById('precio-carga').value),
+            stock: parseInt(document.getElementById('stock-carga').value),
+            marcaId: parseInt(selects.marca.value),
+            categoriaId: parseInt(selects.categoria.value)
+        };
+        try {
+            await fetchData('/api/productos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestDTO)
+            });
+            alert('Producto guardado con éxito!');
+            ocultarFormulario();
+        } catch (error) {
+            alert('Error al guardar el producto.');
+        }
+    };
+
+    // --- SALE LOGIC ---
+    const finalizarVenta = async () => {
+        const ventaDTO = {
+            items: carrito.map(item => ({
+                productoId: item.id,
+                cantidad: item.cantidad
+            }))
+        };
+
+        try {
+            await fetch('/api/ventas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ventaDTO)
+            });
+            alert('Venta realizada con éxito!');
+            carrito = [];
+            renderizarCarrito();
+        } catch (error) {
+            alert('Error al procesar la venta. Verifique el stock.');
+        }
+    };
+
+    // --- UTILITY ---
+    const mostrarMensaje = (msg) => {
+        infoProducto.textContent = msg;
+        setTimeout(() => { infoProducto.textContent = ''; }, 3000);
+    };
+
+    // --- EVENT LISTENERS ---
+    skuInput.addEventListener('change', buscarProducto);
+    finalizarVentaBtn.addEventListener('click', finalizarVenta);
+    formNuevoProducto.addEventListener('submit', guardarNuevoProducto);
+    cancelarCargaBtn.addEventListener('click', ocultarFormulario);
+
+    document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', () => agregarNuevaEntidad(btn.dataset.tipo));
+    });
+
+    cartItemsContainer.addEventListener('click', (e) => {
+        const target = e.target;
+        const productoId = parseInt(target.dataset.id);
+        const item = carrito.find(item => item.id === productoId);
+
+        if(target.classList.contains('qty-btn')) {
+            const action = target.dataset.action;
+            const newQty = action === 'increase' ? item.cantidad + 1 : item.cantidad - 1;
+            actualizarCantidad(productoId, newQty);
+        } else if(target.classList.contains('remove-item-btn')) {
+            actualizarCantidad(productoId, 0); // Setting qty to 0 removes the item
+        }
+    });
+
+    // --- INITIAL LOAD ---
+    inicializarSelects();
 });

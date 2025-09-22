@@ -124,4 +124,10 @@ public class ProductoService {
 
         return producto;
     }
+
+    public ProductoResponseDTO obtenerProductoPorSku(String sku) {
+        Producto producto = productoRepository.findBySku(sku)
+                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con SKU: " + sku));
+        return convertirA_ResponseDTO(producto);
+    }
 }

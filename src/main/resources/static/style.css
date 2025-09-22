@@ -1,85 +1,142 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    margin: 0;
+:root {
+    --primary-color: #007bff;
+    --background-color: #f4f4f9;
+    --surface-color: #ffffff;
+    --text-color: #333;
+    --border-color: #ccc;
+    --danger-color: #dc3545;
 }
 
-.container {
-    background-color: white;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 15px;
+}
+
+.main-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.columna-izquierda, .columna-derecha {
+    background-color: var(--surface-color);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.columna-izquierda { flex: 2; }
+.columna-derecha { flex: 1; }
+
+h1, h2 { color: #444; }
+h1 { text-align: center; }
+
+/* --- Columna Izquierda --- */
+.scanner-input input {
     width: 100%;
-    max-width: 500px;
-    box-sizing: border-box;
-}
-
-h1, h2 {
-    text-align: center;
-    color: #444;
-}
-
-.scanner-input {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    font-size: 1.2em;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-button {
+.info-producto {
+    margin-top: 15px;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 4px;
+    min-height: 24px;
+}
+
+/* Formulario */
+.hidden { display: none; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group select {
     width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.select-with-add { display: flex; gap: 5px; }
+.select-with-add select { flex-grow: 1; }
+.add-btn {
+    flex-shrink: 0;
+    width: 38px;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 1.2em;
     cursor: pointer;
-    margin-bottom: 20px;
 }
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#video-container {
+.btn-guardar, #cancelar-carga-btn {
     width: 100%;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-
-#result-container {
-    background-color: #e9ecef;
-    padding: 15px;
+    padding: 10px;
+    border: none;
     border-radius: 4px;
-    min-height: 50px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.btn-guardar { background-color: var(--primary-color); }
+#cancelar-carga-btn { background-color: #6c757d; }
+
+
+/* --- Columna Derecha --- */
+#cart-items { min-height: 200px; max-height: 400px; overflow-y: auto; }
+.empty-cart { color: #6c757d; text-align: center; margin-top: 20px; }
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.cart-item-info { flex-grow: 1; }
+.cart-item-info p { margin: 0; }
+.cart-item-info .item-name { font-weight: bold; }
+.cart-item-controls { display: flex; align-items: center; gap: 8px; }
+.cart-item-controls button {
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--border-color);
+    background: #f8f9fa;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.remove-item-btn { background-color: var(--danger-color); color: white; }
+
+.cart-total {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px solid #333;
+    text-align: right;
+    font-size: 1.5em;
 }
 
-.producto {
-    font-size: 18px;
+#finalizar-venta-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
 }
-.producto p {
-    margin: 5px 0;
+#finalizar-venta-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }
-.error {
-    color: #d93025;
-    font-weight: bold;
+
+@media (max-width: 768px) {
+    .main-container { flex-direction: column; }
 }

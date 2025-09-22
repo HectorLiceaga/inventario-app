@@ -3,57 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario App</title>
+    <title>Mini POS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="main-container">
+    <div class="columna-izquierda">
+        <h1>Punto de Venta</h1>
+        <div class="scanner-input">
+            <input type="text" id="skuInput" placeholder="Escanee o ingrese el SKU..." autofocus>
+        </div>
+        <div id="info-producto" class="info-producto"></div>
 
-<main class="container">
-    <h1>Lector de Inventario</h1>
+        <div id="nuevo-producto-container" class="hidden">
+            <h2>Cargar Nuevo Producto</h2>
+            <form id="form-nuevo-producto">
+                <div class="form-group">
+                    <label for="sku-carga">SKU</label>
+                    <input type="text" id="sku-carga" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="nombre-carga">Nombre</label>
+                    <input type="text" id="nombre-carga" required>
+                </div>
+                <div class="form-group">
+                    <label for="talle-carga">Talle</label>
+                    <input type="text" id="talle-carga" required>
+                </div>
+                <div class="form-group">
+                    <label for="color-carga">Color</label>
+                    <input type="text" id="color-carga" required>
+                </div>
+                <div class="form-group">
+                    <label for="precio-carga">Precio Venta</label>
+                    <input type="number" step="0.01" id="precio-carga" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock-carga">Stock Inicial</label>
+                    <input type="number" id="stock-carga" required>
+                </div>
 
-    <div class="scanner-input">
-        <label for="skuInput">SKU del Producto:</label>
-        <input type="text" id="skuInput" placeholder="Escanee o ingrese el SKU...">
+                <div class="form-group">
+                    <label for="marca-select">Marca</label>
+                    <div class="select-with-add">
+                        <select id="marca-select" required></select>
+                        <button type="button" class="add-btn" data-tipo="marca">+</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="categoria-select">Categoría</label>
+                    <div class="select-with-add">
+                        <select id="categoria-select" required></select>
+                        <button type="button" class="add-btn" data-tipo="categoria">+</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-guardar">Guardar Producto</button>
+                <button type="button" id="cancelar-carga-btn">Cancelar</button>
+            </form>
+        </div>
     </div>
 
-    <button id="start-camera-btn">📷 Escanear con Cámara</button>
-
-    <div id="video-container"></div>
-
-    <hr>
-
-    <h2>Resultado</h2>
-    <div id="result-container">
-        <p>Esperando escaneo...</p>
+    <div class="columna-derecha">
+        <h2>Carrito</h2>
+        <div id="cart-items">
+            <p class="empty-cart">El carrito está vacío.</p>
+        </div>
+        <div class="cart-total">
+            <h3>Total: $<span id="cart-total-amount">0.00</span></h3>
+        </div>
+        <button id="finalizar-venta-btn" disabled>Finalizar Venta</button>
     </div>
+</div>
 
-    <hr>
-
-    <h2>Cargar Nuevo Producto</h2>
-    <form id="form-nuevo-producto">
-        <div class="form-group">
-            <label for="sku-carga">SKU (del escáner)</label>
-            <input type="text" id="sku-carga" required>
-        </div>
-
-        <div class="form-group">
-            <label for="nombre-carga">Nombre del Producto</label>
-            <input type="text" id="nombre-carga" required>
-        </div>
-
-        <div class="form-group">
-            <label for="marca-select">Marca</label>
-            <div class="select-with-add">
-                <select id="marca-select" required></select>
-                <button type="button" class="add-btn" id="add-marca-btn">+</button>
-            </div>
-        </div>
-
-        <button type="submit" class="btn-guardar">Guardar Producto</button>
-    </form>
-</main>
-
-<script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

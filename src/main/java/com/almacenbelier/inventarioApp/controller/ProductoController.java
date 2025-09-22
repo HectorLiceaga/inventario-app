@@ -3,6 +3,7 @@ package com.almacenbelier.inventarioApp.controller;
 import com.almacenbelier.inventarioApp.dto.request.ProductoRequestDTO;
 import com.almacenbelier.inventarioApp.dto.response.ProductoResponseDTO;
 import com.almacenbelier.inventarioApp.service.ProductoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,16 @@ public class ProductoController {
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
         return ResponseEntity.noContent().build(); // .noContent().build() es un atajo para HttpStatus.NO_CONTENT
+    }
+
+    @GetMapping("/sku/{sku}")
+    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorSku(@PathVariable String sku) {
+        try {
+            ProductoResponseDTO producto = productoService.obtenerProductoPorSku(sku);
+            return ResponseEntity.ok(producto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 
