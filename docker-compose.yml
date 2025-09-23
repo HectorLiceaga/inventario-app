@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Servicio de la Base de Datos PostgreSQL
+  db:
+    image: postgres:14-alpine
+    container_name: postgres_inventario_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: inventariodb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - inventario_data:/var/lib/postgresql/data
+    ports:
+      # Exponemos el puerto 5432 para poder conectarnos con DBeaver desde tu máquina
+      # Si solo la aplicación necesitara acceder, esta línea podría eliminarse.
+      - "5432:5432"
+    networks:
+      - inventario-net
+
+  # Servicio de la Aplicación de Inventario (Spring Boot)
+  app:
+    build: . # Le dice a Compose que construya una imagen usando el Dockerfile en la carpeta actual
+    container_name: app_inventario_springboot
+    restart: unless-stopped
+    depends_on:
+      - db # Se asegura de que el servicio 'db' se inicie antes que la aplicación
+    ports:
+      - "8081:8081" # Mapea el puerto de la app a tu máquina
+    environment:
+      # ¡IMPORTANTE! Sobrescribimos la URL de la base de datos
+      # En lugar de 'localhost', usamos el nombre del servicio de la BD: 'db'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/inventariodb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    networks:
+      - inventario-net
+
+# Definimos los volúmenes y redes a utilizar
+volumes:
+  inventario_data: # Este volumen guardará los datos de la BD de forma persistente
+
+networks:
+  inventario-net:
+    driver: bridge
