@@ -1,10 +1,13 @@
 package com.almacenbelier.inventarioApp.controller;
 
 import com.almacenbelier.inventarioApp.dto.request.VentaRequestDTO;
+import com.almacenbelier.inventarioApp.dto.response.VentaResponseDTO;
 import com.almacenbelier.inventarioApp.service.VentaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/ventas")
@@ -24,5 +27,11 @@ public class VentaController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VentaResponseDTO>> obtenerVentas() {
+        List<VentaResponseDTO> ventas = ventaService.obtenerTodasLasVentas();
+        return ResponseEntity.ok(ventas);
     }
 }

@@ -130,4 +130,14 @@ public class ProductoService {
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con SKU: " + sku));
         return convertirA_ResponseDTO(producto);
     }
+
+    public List<ProductoResponseDTO> obtenerProductosConBajoStock() {
+        // Definimos "bajo stock" como 5 o menos unidades. Puedes cambiar este número.
+        int umbralBajoStock = 5;
+
+        return productoRepository.findByStockLessThanEqual(umbralBajoStock)
+                .stream()
+                .map(this::convertirA_ResponseDTO)
+                .collect(Collectors.toList());
+    }
 }

@@ -60,5 +60,11 @@ public class ProductoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/bajo-stock")
+    public ResponseEntity<List<ProductoResponseDTO>> obtenerProductosConBajoStock() {
+        List<ProductoResponseDTO> productos = productoService.obtenerProductosConBajoStock();
+        return ResponseEntity.ok(productos);
+    }
 }
 
