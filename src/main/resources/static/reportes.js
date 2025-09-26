@@ -12,15 +12,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cargarUltimasVentas = async () => {
         try {
-            const ventas = await fetchData('/api/ventas');
+            // Ordenamos las ventas de la más reciente a la más antigua
+            const ventas = (await fetchData('/api/ventas')).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
             if (ventas.length === 0) {
                 ventasContainer.innerHTML = '<p>No hay ventas registradas.</p>';
                 return;
             }
-            // Aquí puedes construir una tabla o lista con los datos de las ventas
-            let html = '<ul>';
+
+            let html = '<ul class="lista-ventas">';
             ventas.forEach(venta => {
-                html += `<li>Venta #${venta.id} - Total: $${venta.total.toFixed(2)}</li>`;
+                // Formateamos la fecha para que sea más legible
+                const fechaFormateada = new Date(venta.fecha).toLocaleString('es-AR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                html += `
+                    <li class="venta-item">
+                        <div class="venta-header">
+                            <strong>Venta #${venta.id}</strong>
+                            <span>${fechaFormateada}</span>
+                            <span>Total: $${venta.total.toFixed(2)}</span>
+                        </div>
+                        <ul class="venta-item-detalles">
+                `;
+
+                // --- AQUÍ ESTÁ LA MAGIA ---
+                // Iteramos sobre los items de CADA venta
+                venta.items.forEach(item => {
+                    html += `
+                        <li>
+                            ${item.cantidad} x ${item.nombreProducto} 
+                            (@ $${item.precioUnitario.toFixed(2)} c/u)
+                        </li>
+                    `;
+                });
+
+                html += `
+                        </ul>
+                    </li>
+                `;
             });
             html += '</ul>';
             ventasContainer.innerHTML = html;
@@ -37,9 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 bajoStockContainer.innerHTML = '<p>No hay productos con bajo stock.</p>';
                 return;
             }
-            let html = '<ul>';
+            let html = '<ul class="lista-bajo-stock">';
             productos.forEach(producto => {
-                html += `<li>${producto.nombre} (SKU: ${producto.sku}) - Stock: ${producto.stock}</li>`;
+                html += `<li>${producto.nombre} (SKU: ${producto.sku}) - <strong>Stock: ${producto.stock}</strong></li>`;
             });
             html += '</ul>';
             bajoStockContainer.innerHTML = html;
