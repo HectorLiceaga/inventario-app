@@ -45,4 +45,7 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
+
+    @Column(unique = true, nullable = true)
+    private String codigoInterno;
 }

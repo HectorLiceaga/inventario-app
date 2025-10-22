@@ -38,4 +38,6 @@ public class ProductoRequestDTO {
 
     @NotNull(message = "El ID de la categoría es obligatorio.")
     private Long categoriaId;
+
+    private String codigoInterno;
 }
