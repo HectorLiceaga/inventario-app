@@ -11,7 +11,8 @@ RUN mvn dependency:go-offline
 
 # Copiamos el resto del código fuente y construimos el .jar
 COPY src ./src
-RUN mvn package -DskipTests
+# Forzar UTF-8 para la ejecución de Maven dentro del contenedor
+RUN mvn -Dfile.encoding=UTF-8 package -DskipTests
 
 # --- Etapa 2: Ejecución ---
 # Usamos una imagen ligera solo con el entorno de ejecución de Java 17
@@ -24,7 +25,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Exponemos el puerto en el que corre la aplicación
-EXPOSE 8081
+EXPOSE 8080
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
 ENTRYPOINT ["java", "-jar", "app.jar"]

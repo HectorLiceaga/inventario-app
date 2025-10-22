@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    Optional<Producto> findBySku(String sku);
-
     List<Producto> findByStockLessThanEqual(int stockMinimo);
+
+    Optional<Producto> findBySkuOrCodigoInterno(String sku, String codigoInterno);
 }

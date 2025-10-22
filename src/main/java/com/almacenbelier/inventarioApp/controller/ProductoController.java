@@ -51,13 +51,13 @@ public class ProductoController {
         return ResponseEntity.noContent().build(); // .noContent().build() es un atajo para HttpStatus.NO_CONTENT
     }
 
-    @GetMapping("/sku/{sku}")
-    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorSku(@PathVariable String sku) {
+    @GetMapping("/identificador/{identificador}")
+    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorIdentificador(@PathVariable String identificador) {
         try {
-            ProductoResponseDTO producto = productoService.obtenerProductoPorSku(sku);
+            ProductoResponseDTO producto = productoService.obtenerProductoPorIdentificador(identificador);
             return ResponseEntity.ok(producto);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // Devuelve 404 si no se encuentra
         }
     }
 
