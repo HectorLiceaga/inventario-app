@@ -58,6 +58,7 @@ public class VentaService {
         nuevaVenta.setTotal(totalVenta);
         ventaRepository.save(nuevaVenta); // Guardar la venta y sus items en la BD
     }
+
     @Transactional(readOnly = true)
     public List<VentaResponseDTO> obtenerTodasLasVentas() {
         return ventaRepository.findAll() // Asume que ordenará por más reciente
@@ -82,5 +83,21 @@ public class VentaService {
 
         ventaDTO.setItems(itemsDTO);
         return ventaDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public List<VentaResponseDTO> obtenerVentas(LocalDateTime fechaDesde, LocalDateTime fechaHasta) {
+        List<Venta> ventas;
+        if (fechaDesde != null && fechaHasta != null) {
+            // Ajustamos la fechaHasta para incluir todo el día
+            LocalDateTime fechaHastaAjustada = fechaHasta.toLocalDate().atTime(23, 59, 59);
+            ventas = ventaRepository.findByFechaBetweenOrderByFechaDesc(fechaDesde, fechaHastaAjustada);
+        } else {
+            // Si no se proveen fechas, devuelve todas (o podrías limitar a las últimas N)
+            ventas = ventaRepository.findAll(); // O usar Paging/Sorting para limitar
+        }
+        return ventas.stream()
+                .map(this::convertirVentaA_DTO)
+                .collect(Collectors.toList());
     }
 }
